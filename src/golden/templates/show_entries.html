@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class=page>
+<h1>Computed Golden Set (sum of true relations)</h1>
+
+Parameters: {{ params }}<br><br> 
+
+Using underscore names: {{ use_underscore_names }}<br><br>
+Using bootstrap: {{ use_bootstrap }}<br><br>
+
+Total golden set size: <br>
+{{ total_golden_size }} functions<br>
+{{ true_relations }} must relations<br>
+{{ false_relations }} must not relations<br>
+{{ num_classes }} equivalence classes<br>
+<br>
+
+F score: {{ f_score }}<br>
+Weighted average precision: {{ avg_precision }}<br>
+Weighted average recall: {{ avg_recall }}
+<br><br>
+
+<hr>
+
+The clusters are sorted by inverse impact on the F score (worst on top).
+<br>
+
+<ul class="groups">
+    {% for g in groups %}
+    <li>
+    <span style="text-decoration: underline">Golden cluster</span>:
+    {% for fn in g.functions %}
+       <span style="color: {{ fn.color }}">{{ fn.name }}</span>
+    {% endfor %}
+    <br><br>
+    <span style="text-decoration: underline">Model cluster</span>: 
+    {% for fn in g.cluster %}
+       <span style="color: {{ fn.color }}">{{ fn.name }}</span>
+    {% endfor %}
+    <br><br>
+
+    Precision(cluster, model): {{ g.precision }}<br>
+    Recall(cluster, model): {{ g.recall }}<br>
+    F: {{ g.f }}<br>
+    <br>
+
+    <span style="text-decoration: underline">Missing</span>: 
+    {% for fn in g.missing %}
+       <span style="color: {{ fn.color }}">{{ fn.name }}</span>
+    {% endfor %}
+    <br><br>
+
+    <span style="text-decoration: underline">Extra</span>:
+    {% for fn in g.extra%}
+       <span style="color: {{ fn.color }}">{{ fn.name }}</span>
+    {% endfor %}
+    <br><br>
+    </li>
+    <br>
+    {% else %}
+    <li><em>No groups to display.</em> 
+    {% endfor %}
+</ul>
+{% endblock %}

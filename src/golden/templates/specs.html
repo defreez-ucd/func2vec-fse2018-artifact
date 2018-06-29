@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<script type="text/javascript">
+ $(document).ready(function() {
+     $('.btn-judge').on('click', function (e) {
+         $.ajax({
+             url: 'specs',
+             type: 'POST',
+             data: {
+                 'button': e.target.id
+             }
+         });
+     });
+ });
+</script>
+
+Average precision: {{ avgprecision }}<br><br>
+
+{% for spec in specs %}
+  Support: {{ spec.support }}<br>
+  Confidence: {{ spec.confidence }}<br>
+
+  {% for rule in spec.rules %}
+    {{ rule.rank }} <a href="https://elixir.bootlin.com/linux/v4.10/ident/{{rule.contexg}}">{{ rule.context }}</a> &rarr; <a href="https://elixir.bootlin.com/linux/v4.10/ident/{{rule.response}}">{{ rule.response }}</a>
+
+    <div class="btn-group btn-group-sm" role="group">
+      {% if rule.judgement == None %}
+        <button type="button" class="btn btn-secondary btn-judge" id="F|{{rule.context}}|{{rule.response}}">False</button>
+        <button type="button" class="btn btn-primary btn-judge" id="?|{{rule.context}}|{{rule.response}}">?</button>
+        <button type="button" class="btn btn-secondary btn-judge" id="T|{{rule.context}}|{{rule.response}}">True</button>
+      {% elif rule.judgement == False %}
+        <button type="button" class="btn btn-danger btn-judge" id="F|{{rule.context}}|{{rule.response}}">False</button>
+        <button type="button" class="btn btn-secondary btn-judge" id="?|{{rule.context}}|{{rule.response}}">?</button>
+        <button type="button" class="btn btn-secondary btn-judge" id="T|{{rule.context}}|{{rule.response}}">True</button>
+      {% elif rule.judgement == True %}
+        <button type="button" class="btn btn-secondary btn-judge" id="F|{{rule.context}}|{{rule.response}}">False</button>
+        <button type="button" class="btn btn-secondary btn-judge" id="?|{{rule.context}}|{{rule.response}}">?</button>
+        <button type="button" class="btn btn-success btn-judge" id="T|{{rule.context}}|{{rule.response}}">True</button>
+      {% else %}
+        WTF?!
+      {% endif %}
+    </div>
+    <br>
+    <button class="btn btn-link" data-toggle="collapse" data-target="#S{{ spec.id }}{{ rule.id }}" type="button">Supporting handlers:</button><br>
+    <div class="collapse" id="S{{ spec.id }}{{ rule.id }}">
+      {% for handler in rule.supporting_handlers %}
+        <a href="https://elixir.bootlin.com/linux/v4.10/source/{{ handler.elixir_predicate() }}">{{ handler }}</a><br>
+        {{ handler.db_id }} {{ handler.context }} &rarr; {{ handler.response }}<br>
+      {% endfor %}
+    </div>
+    <button class="btn btn-link" data-toggle="collapse" data-target="#V{{ spec.id }}{{ rule.id }}" type="button">Violating handlers:</button><br>
+    <div class="collapse" id="V{{ spec.id }}{{ rule.id }}">
+      {% for handler in rule.violating_handlers %}
+          <a href="https://elixir.bootlin.com/linux/v4.10/source/{{ handler.elixir_predicate() }}">{{ handler }}</a><br>
+          {{ handler.db_id }} {{ handler.context }} &rarr; {{ handler.response }}<br>
+      {% endfor %}
+    </div>
+  {% endfor %}
+  <br><hr>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class=page>
+<h1>Computed Golden Set (sum of true relations)</h1>
+
+Parameters: {{ params }}<br><br> 
+
+Using underscore names: {{ use_underscore_names }}<br><br>
+Using bootstrap: {{ use_bootstrap }}<br><br>
+
+Total golden set size: <br>
+<!-- {{ total_golden_size }} functions<br> -->
+{{ true_relations }} must relations<br>
+{{ false_relations }} must not relations<br>
+{{ num_classes }} equivalence classes<br>
+<br>
+
+<hr>
+
+<ul class="groups">
+    {% for group in groups %}
+    <li>{{ group |safe }}
+    {% else %}
+    <li><em>No groups to display.</em> 
+    {% endfor %}
+</ul>
+{% endblock %}

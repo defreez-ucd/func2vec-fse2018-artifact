@@ -1,0 +1,16 @@
+---
+- pip:
+    name: ipython
+    version: 5.0
+
+- pip:
+    name: jupyter
+    
+- pip:
+    name: textblob
+    version: 0.15.0
+
+
+- file: path=/root/.jupyter state=directory
+- name: Copy default.conf
+  copy: src=jupyter_notebook_config.py dest=/root/.jupyter/jupyter_notebook_config.py owner=root group=root mode=0664

@@ -1,0 +1,1 @@
+from .golden import app

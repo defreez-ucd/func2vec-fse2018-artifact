@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h3>Everything in gold standard</h3>
+
+<img src="data:image/png;base64,{{ all_plot }}" width="500">
+<br><br>
+
+{% for s in all_scores %}
+Score: {{ s }}<br>
+{% endfor %}
+
+<ul class="groups">
+    {% for s in similarities %}
+    <li>{{ s }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Gold standard without bootstrap added</h3>
+
+<img src="data:image/png;base64,{{ noboot_plot }}" width="500">
+<br><br>
+
+{% for s in noboot_scores %}
+Score: {{ s }}<br>
+{% endfor %}
+
+<ul class="groups">
+    {% for s in similarities %}
+    <li>{{ s }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Underscore wrappers only</h3>
+
+<img src="data:image/png;base64,{{ underscore_plot }}" width="500">
+<br><br>
+
+{% for s in underscore_scores %}
+Score: {{ s }}<br>
+{% endfor %}
+
+<ul class="groups">
+    {% for s in similarities %}
+    <li>{{ s }}</li>
+    {% endfor %}
+</ul>
+
+<img src="data:image/png;base64,{{ manual_plot }}" width="500">
+<br><br>
+
+<h3>Only relations.txt files</h3>
+
+{% for s in manual_scores %}
+Score: {{ s }}<br>
+{% endfor %}
+
+<ul class="groups">
+    {% for s in similarities %}
+    <li>{{ s }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

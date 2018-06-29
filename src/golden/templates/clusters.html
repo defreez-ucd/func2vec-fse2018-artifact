@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<ul class="groups">
+    {% for group in groups %}
+    <li>{{ group }}
+    {% else %}
+    <li><em>No groups to display.</em> 
+    {% endfor %}
+</ul>
+
+{% endblock %}

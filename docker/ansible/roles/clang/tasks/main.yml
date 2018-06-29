@@ -1,0 +1,12 @@
+---
+- name: Install clang
+  apt:
+    name: clang
+    state: present
+
+- name: Install packages for building clang tools
+  apt:
+    name={{ item }} state=installed
+  with_items:
+    - libncurses5-dev
+  become: true    

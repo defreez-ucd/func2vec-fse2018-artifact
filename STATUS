@@ -1,0 +1,12 @@
+Reusable 
+
+This artifact includes sufficient code to run the experiments described in the paper, and python scripts for running func2vec on any LLVM bitcode file.
+The func2vec tool has all of the options parameterized and can be run on the command line in the docker container with very little setup.
+
+There are just four steps for any target program that can be compiled with LLVM:
+	0) Generate a bitcode file (bitcode included for Linux in artifact)
+	1) Walk the bitcode file (python2 -m walker walk -h, see README for exact commands)
+	2) Train a model from the walk (python2 -m walker train -h, see README for exact commands)
+	3) Do something with the model (check the similarity of functions, run the paper evaluations, etc.)
+
+The func2vec tool can be run on any LLVM bitcode file, but the error-handling specification mining script is specific to Linux at this time.

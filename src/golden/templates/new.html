@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class=page>
+<h1>Computed Golden Set (sum of true relations)</h1>
+
+Parameters: {{ params }}<br><br> 
+
+Using underscore names: {{ use_underscore_names }}<br><br>
+Using bootstrap: {{ use_bootstrap }}<br><br>
+
+<dl>
+    <dt>True positive</dt>
+    <dd>A pair of functions with a must (true) relation in the gold standard, and that appear in the same model cluster.</dd>
+    <dt>False positive</dt>
+    <dd>A pair of functions with a must-not (false) relation in the gold standard, and in the same model cluster.</dd>
+
+    <dt>True negative</dt>
+    <dd>A pair of functions with a must-not (false) relation in the gold standard, and in different model clusters.</dd>
+    <dt>False negative</dt>
+    <dd>A pair of functions with a must (true) relation in the gold standard, and in different model clusters.</dd>
+</dl>
+
+True positives: {{ metric.true_positives }} <br>
+True negatives: {{ metric.true_negatives }} <br>
+False positives: {{ metric.false_positives }} <br>
+False negatives: {{ metric.false_negatives }} <br><br>
+
+Must relations (in vocab): {{ metric.num_must_relations }}<br>
+Must-not relations (in vocab): {{ metric.num_mustnot_relations }}<br>
+Missing from vocab: {{ metric.num_missing_vocab }} <br><br>
+
+Precision: {{ precision }} <br>
+Recall: {{ recall }} <br>
+F1: {{ f1 }} <br>
+
+{{ metric.missing_functions }}
+{% endblock %}
+<br><br>

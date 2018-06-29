@@ -1,0 +1,8 @@
+---
+- name: Install AWS CLI
+  apt:
+    name={{ item }} state=installed
+  with_items:
+    - awscli
+    - unzip     # Makes fetch_and_run.sh helper happy
+  become: true

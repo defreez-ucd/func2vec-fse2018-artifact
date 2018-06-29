@@ -1,0 +1,67 @@
+---
+- name: Install EHnfer package dependencies
+  apt:
+    name={{ item }} state=installed
+  with_items:
+    - libboost-dev
+    - libsqlite3-dev
+    - libconfig++-dev
+    - python3-tk
+    - python-tk
+    - libboost-program-options-dev
+    - python-pygraphviz
+    - cmake
+    - zlib1g-dev
+    - git
+    - python-numpy
+    - autoconf     # for building protobuf
+    - libtool      # for building protobuf
+  become: true
+    
+- name: Install EHnfer python2 dependencies with pip
+  pip:
+    name={{ item }} executable=pip2
+  with_items:
+    - gensim
+    - networkx
+    - protobuf
+    - matplotlib
+    - sklearn
+    - pandas
+    - seaborn
+    - futures
+    - configparser
+    - tqdm
+    - ipdb
+
+- name: Download Protobuf 3.0.2
+  get_url:
+    url: https://github.com/google/protobuf/releases/download/v3.0.2/protobuf-cpp-3.0.2.tar.gz
+    dest: /tmp
+
+- unarchive:
+    src: /tmp/protobuf-cpp-3.0.2.tar.gz
+    dest: /tmp
+
+- name: Build and install protobuf
+  shell: ./autogen.sh && ./configure && make -j$(nproc) && make install 
+  args:
+    chdir: /tmp/protobuf-3.0.2
+
+- name: Download LLVM 3.8.1
+  get_url:
+    url: https://releases.llvm.org/3.8.1/llvm-3.8.1.src.tar.xz
+    dest: /tmp/llvm-3.8.1.src.tar.xz
+
+- unarchive:
+    src: /tmp/llvm-3.8.1.src.tar.xz
+    dest: /tmp
+
+- file:
+    path: /tmp/llvm-3.8.1.src/build
+    state: directory
+
+- shell: cmake .. -DLLVM_ENABLE_RTTI=ON -DCMAKE_BUILD_TYPE=Release && cmake --build . --target install -- -j$(nproc)
+  args:
+    chdir: /tmp/llvm-3.8.1.src/build
+

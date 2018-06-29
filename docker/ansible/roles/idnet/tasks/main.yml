@@ -1,0 +1,8 @@
+---
+- pip:
+    name: textblob
+    version: 0.15.0
+
+- name: download wordnet
+  shell: python -m textblob.download_corpora
+

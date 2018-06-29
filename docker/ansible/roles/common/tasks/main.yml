@@ -1,0 +1,86 @@
+---
+- apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu/ xenial main restricted
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu/ xenial-updates main restricted
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu/ xenial universe
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://archive.ubuntu.com/ubuntu/ xenial universe
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu/ xenial-updates universe
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://archive.ubuntu.com/ubuntu/ xenial-updates universe
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu/ xenial multiverse
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://archive.ubuntu.com/ubuntu/ xenial multiverse
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu/ xenial-updates multiverse
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://archive.ubuntu.com/ubuntu/ xenial-updates multiverse
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://security.ubuntu.com/ubuntu/ xenial-security main restricted
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://security.ubuntu.com/ubuntu/ xenial-security universe
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://security.ubuntu.com/ubuntu/ xenial-security universe
+    state: absent
+    update_cache: no
+- apt_repository:
+    repo: deb http://security.ubuntu.com/ubuntu/ xenial-security multiverse
+    state: absent
+    update_cache: no
+
+- apt_repository:
+    repo: deb http://mirror.cse.ucdavis.edu/archive.ubuntu.com/ubuntu xenial main restricted universe multiverse
+    state: present
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://mirror.cse.ucdavis.edu/archive.ubuntu.com/ubuntu xenial main restricted universe multiverse
+    state: present
+    update_cache: no
+- apt_repository:
+    repo: deb http://mirror.cse.ucdavis.edu/archive.ubuntu.com/ubuntu xenial-updates main restricted universe multiverse
+    state: present
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://mirror.cse.ucdavis.edu/archive.ubuntu.com/ubuntu xenial-updates main restricted universe multiverse
+    state: present
+    update_cache: no
+- apt_repository:
+    repo: deb http://mirror.cse.ucdavis.edu/archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse
+    state: present
+    update_cache: no
+- apt_repository:
+    repo: deb-src http://mirror.cse.ucdavis.edu/archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse 
+    state: present
+    update_cache: yes
