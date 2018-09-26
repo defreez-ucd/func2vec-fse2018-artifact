@@ -57,6 +57,7 @@ def parse_args():
         action_kwargs["support_threshold"] = int(args.support)
         action_kwargs["similarity_threshold"] = float(args.similarity)
         action_kwargs["model_file"] = args.model
+        action_kwargs["output"] = args.output
     else:
         help_and_exit(parser)
 

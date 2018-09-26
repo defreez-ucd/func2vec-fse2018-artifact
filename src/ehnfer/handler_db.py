@@ -36,7 +36,7 @@ class TacticType(Enum):
         elif string == "POST":
             return TacticType.POST
         elif string == "FN":
-            return None
+            return TacticType.FN
         elif string == "HNDL":
             return None
         else:
@@ -196,47 +196,6 @@ class Spec(object):
         self.apply_cache[handler] = ret
         return ret
 
-    @staticmethod
-    def from_str(str):
-        # Extract string representations of individual items
-        context_str_list = str[1:str.find('}')].split(',')
-        context_str_list = [x.strip() for x in context_str_list]
-        response_str_list = str[str.rfind('{') + 1:-1].split(',')
-        response_str_list = [x.strip() for x in response_str_list]
-
-        # Convert string representation of items to actual objects
-        context_items = []
-        for item_str in context_str_list:
-            tokenized = item_str.split('|')
-            tactic_type = TacticType.from_string(tokenized[0])
-            if not tactic_type:
-                continue
-            name = tokenized[1]
-            item_type = ItemType.from_string(tokenized[2])
-            if not item_type:
-                continue
-            i = Item(name, item_type, tactic_type)
-            context_items.append(i)
-
-        response_items = []
-        for item_str in response_str_list:
-            tokenized = item_str.split('|')
-            tactic_type = TacticType.from_string(tokenized[0])
-            if not tactic_type:
-                continue
-            name = tokenized[1]
-            item_type = ItemType.from_string(tokenized[2])
-            if not item_type:
-                continue
-            i = Item(name, item_type, tactic_type)
-            response_items.append(i)
-
-        spec = Spec(None)
-        spec.context = set(context_items)
-        spec.response = set(response_items)
-
-        return spec
-
     def __eq__(self, other):
         return self.context == other.context and self.response == other.response
 
@@ -337,7 +296,7 @@ class HandlerDb:
                 if (i.tactic_type == TacticType.FN):
                     returning_error.add(i.name)
             handler.context = [i for i in handler.context if
-                               not (i.name in returning_error and i.tactic_type == TacticType.PRE)]
+                               not (i.name in returning_error) and i.tactic_type == TacticType.PRE]
 
     def read_specs(self):
         query = "SELECT id FROM Spec"
@@ -424,6 +383,79 @@ class HandlerDb:
         for t in self.handlers:
             flat_transactions.append(self.handlers[t].context + self.handlers[t].response)
         return flat_transactions
+
+    def mangle_item(self, item):
+        return item.split('.')[0]
+
+    def supporting_files(self, rule):
+        ret = set()
+        supporting_handlers = self.supporting_handlers([rule])
+        for h in supporting_handlers:
+            file = self.file_from_predicate(h.predicate_loc)
+            ret.add(file)
+        return ret
+
+    def local_confidence(self, rule):
+        applicable_handlers = list(self.applicable_handlers(rule))
+        supporting_handlers = list(self.supporting_handlers([rule]))
+        supporting_files = self.supporting_files(rule)
+
+        local_applicable = [x for x in applicable_handlers if self.file_from_predicate(x.predicate_loc) in supporting_files]
+        if len(local_applicable) == 0:
+            return 0.0
+        local_supporting = [x for x in supporting_handlers if self.file_from_predicate(x.predicate_loc) in supporting_files]
+
+        return float(len(local_supporting)) / float(len(local_applicable))
+
+    def file_from_predicate(self, predicate_loc):
+        return predicate_loc.split(':')[0]
+
+    def global_confidence(self, rule):
+        num_support = len(self.supporting_handlers([rule]))
+        num_applicable = len(self.applicable_handlers(rule))
+        return float(num_support) / float(num_applicable)
+
+    def applicable_handlers(self, rule):
+        applicable = set()
+
+        for h in self.handlers:
+            handler = self.handlers[h]
+            context = frozenset([str(self.mangle_item(x.name)) for x in handler.context])
+            response = frozenset([str(self.mangle_item(x.name)) for x in handler.response])
+            if context.issuperset(rule.context):
+                applicable.add(handler)
+
+        return(applicable)
+
+    def supporting_handlers(self, rules):
+        """Return list of handlers supporting a list of rules.
+        """
+
+        # Go through list of handlers
+        # if handler context is superset of rule and response is superset of response add to list
+        supporting = set()
+        applicable = set()
+
+        reverse_supporting = set()
+        reverse_applicable = set()
+
+        for rule in rules:
+            for h in self.handlers:
+                handler = self.handlers[h]
+                context = frozenset([str(self.mangle_item(x.name)) for x in handler.context])
+                response = frozenset([str(self.mangle_item(x.name)) for x in handler.response])
+                if context.issuperset(rule.context):
+                    applicable.add(handler)
+                    if response.issuperset(rule.response):
+                        supporting.add(handler)
+
+                if response.issuperset(rule.response):
+                    reverse_applicable.add(handler)
+                    if context.issuperset(rule.context):
+                        reverse_supporting.add(handler)
+
+        return(supporting)
+
 
     def supporting(self, spec):
         """List all of the handlers that support a specification.
